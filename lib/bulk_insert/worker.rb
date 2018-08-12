@@ -153,7 +153,10 @@ module BulkInsert
       if (adapter_name =~ /\APost(?:greSQL|GIS)/i && ignore )
         ' ON CONFLICT DO NOTHING'
       elsif (adapter_name =~ /\APost(?:greSQL|GIS)/i && update_duplicates )
-        ' ON CONFLICT DO UPDATE'
+        update_values = @columns.map do |column|
+          "`#{column.name}`=VALUES(`#{column.name}`)"
+        end.join(', ')
+        ' ON CONFLICT DO UPDATE ' + update_values
       elsif adapter_name =~ /^mysql/i && update_duplicates
         update_values = @columns.map do |column|
           "`#{column.name}`=VALUES(`#{column.name}`)"
