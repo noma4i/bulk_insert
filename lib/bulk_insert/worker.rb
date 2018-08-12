@@ -156,7 +156,7 @@ module BulkInsert
         update_values = @columns.map do |column|
           "`#{column.name}`=VALUES(`#{column.name}`)"
         end.join(', ')
-        ' ON CONFLICT DO UPDATE ' + update_values
+        ' ON CONFLICT (' + @columns.map(&:name).join(',') + ') DO UPDATE ' + update_values
       elsif adapter_name =~ /^mysql/i && update_duplicates
         update_values = @columns.map do |column|
           "`#{column.name}`=VALUES(`#{column.name}`)"
